@@ -57,8 +57,17 @@ Renderer.prototype.drawTriangles = function(face) {
 			// retrieve vertex
 			var vtx1 = this.decoder.readVertex(vIndex);
 		
-			// rotation Y
-			vtx1[1] = Math.cos(radX)*vtx1[1]-Math.sin(radX)*vtx1[2];
+			//vtx1[0] = vtx1[0];
+			var y = vtx1[1];
+			var z = vtx1[2];
+			vtx1[1] = Math.cos(radX)*y-Math.sin(radX)*z;
+			vtx1[2] = Math.sin(radX)*y+Math.cos(radX)*z
+			
+			var x = vtx1[0];
+			z = vtx1[2];
+			vtx1[0] = Math.cos(radY)*x+Math.sin(radY)*z;
+			//vtx1[1] = vtx1[1];
+			vtx1[2] = -Math.sin(radY)*x+Math.cos(radY)*z;
 					  
 			// draw 2 lengths of a triangle
 			if(j==1) {

@@ -37,7 +37,6 @@
 			var rZ = 0;
 			var STEP = 10;
 			var instance;
-			var bAuto = true;
 			var renderer = new Renderer(canvas.width, canvas.height, myContext);
 			
 			loadPLY();
@@ -49,12 +48,11 @@
 			
 			// rotation controls
 			$("#imgLeft").click(function() {
-				bAuto = false;
-				rX -= STEP;
-				if(rX<0)
-					rX = 360+rX;
+				rY -= STEP;
+				if(rY<0)
+					rY = 360+rY;
 				
-				$("#xpos").html("Rotate X: "+rX);
+				$("#ypos").html("Rotate Y: "+rY);
 				if(null==instance)
 					loadPLY();
 				else
@@ -62,12 +60,11 @@
 			});
 			
 			$("#imgRight").click(function() {
-				bAuto = false;
-				rX += STEP;
-				if(rX>360)
-					rX -= 360;
+				rY += STEP;
+				if(rY>360)
+					rY -= 360;
 				
-				$("#xpos").html("Rotate X: "+rX);
+				$("#ypos").html("Rotate Y: "+rY);
 				if(null==instance)
 					loadPLY();
 				else
@@ -100,17 +97,17 @@
 			}
 			
 			setInterval(function() {
-				if(bAuto) {
-					rX += 2;
-					if(rX>360)
-						rX -= 360;
-					
-					$("#xpos").html("Rotate X: "+rX);
-					if(null==instance)
-						loadPLY();
-					else
-						update();
-				}
+			
+				rX += 2;
+				if(rX>360)
+					rX -= 360;
+				
+				$("#xpos").html("Rotate X: "+rX);
+				if(null==instance)
+					loadPLY();
+				else
+					update();
+				
 			}, 100);
 
 		});
@@ -157,6 +154,7 @@
       	<option value="cow.ply">cow</option>
     </select> 
     <p id="xpos"> Rotate X: </p>
+    <p id="ypos"> Rotate Y: </p>
     
 	Magnification: <input id="slider" type="range" value=5  min="1" max="10" step="1" /><br>
     
