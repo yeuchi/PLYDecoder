@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	Module:			DecodePLY.html
+    
+    Description:	decode PLY 3D file
+    				extending work of Devon Govett from bmp.js
+    
+	Reference:
+    	BMP.js		http://devongovett.github.com/bmp.js/
+        PLY spec.	http://paulbourke.net/dataformats/ply/
+        tool:		http://www.cc.gatech.edu/projects/large_models/ply.html
+        samples:	http://people.sc.fsu.edu/~jburkardt/data/ply/ply.html
+  
+    Author(s):		Devon Govett provide a bmp decoding example.
+    				C.T. Yeung modify to decode PLY.
+    
+    History:	
+    30Jan12			ASCII format functional (just barely)		cty	
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PLY decoder</title>
+
+	<LINK REL=StyleSheet HREF="default.css" TYPE="text/css"> 
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="Renderer.js"></script>
+	<script src="PLY.js"></script>
+    <script>
+		$(document).ready(function() {
+			var canvas = document.getElementById("myCanvas");
+			var myContext = canvas.getContext("2d");
+			myContext.strokeStyle = 'black';
+			
+			var rX = 180;
+			var rY = 0;
+			var rZ = 0;
+			var STEP = 10;
+			var instance;
+			var bAuto = true;
+			var renderer = new Renderer(canvas.width, canvas.height, myContext);
+			
+			loadPLY();
+			
+			$("#slider").change(function() {
+				if(null!=instance)
+					update();
+			});
+			
+			// rotation controls
+			$("#imgLeft").click(function() {
+				bAuto = false;
+				rX -= STEP;
+				if(rX<0)
+					rX = 360+rX;
+				
+				$("#xpos").html("Rotate X: "+rX);
+				if(null==instance)
+					loadPLY();
+				else
+					update();
+			});
+			
+			$("#imgRight").click(function() {
+				bAuto = false;
+				rX += STEP;
+				if(rX>360)
+					rX -= 360;
+				
+				$("#xpos").html("Rotate X: "+rX);
+				if(null==instance)
+					loadPLY();
+				else
+					update();
+			});
+			
+			$("#combo").change(function() {
+				loadPLY();
+			});
+			
+			function loadPLY() {
+				var url = "asset/" + $("#combo").val();
+				PLY.load(url, render);
+			}
+			
+			function render(obj) {
+				instance = obj;
+				update();
+			}
+			
+			function update() {	
+				var mag = $("#slider").val();
+				myContext.clearRect(0,0,canvas.width, canvas.height);
+				
+				var numTriangles = 0;
+				var numTriangles = instance.decode();
+				renderer.drawWireFrame(instance, mag, rX, rY, rZ);
+				//instance.drawWireFrame(context, canvas.width, canvas.height, mag,rX, rY, rZ);
+				$("#faceCount").html("Face count: " + numTriangles);
+			}
+			
+			setInterval(function() {
+				if(bAuto) {
+					rX += 2;
+					if(rX>360)
+						rX -= 360;
+					
+					$("#xpos").html("Rotate X: "+rX);
+					if(null==instance)
+						loadPLY();
+					else
+						update();
+				}
+			}, 100);
+
+		});
+    </script>
+</head>
+
+<body style="position:relative">
+<div id="divCanvas">
+    <canvas id="myCanvas" width="400" height="400">
+        HTML5 canvas failed to load.
+    </canvas>
+</div>
+
+<div id="divLeft">
+	<img id="imgLeft" class="img" src="asset/arrowLeft.png"
+    onMouseOver="src='asset/arrowLeftOver.png'"
+    onMouseOut="src='asset/arrowLeft.png'"/>
+</div>
+
+<div id="divRight">
+	<img id="imgRight" class="img" src="asset/arrowRight.png"
+    onMouseOver="src='asset/arrowRightOver.png'"
+    onMouseOut="src='asset/arrowRight.png'"/>
+</div>
+
+<div id="divControls">
+    <p> Javascript-PLY loader<br>
+    <br>
+    Reference: <br>
+    (1)3D Computer Graphics - 3rd Edition by Alan Watt, pg. 5<br>
+    (2)<a href="http://paulbourke.net/dataformats/ply/">PLY specification</a><br>
+    (3)<a href="http://devongovett.github.com/bmp.js/">Devon Govett's bmp.js</a><br>
+    (4)<a href="http://www.cc.gatech.edu/projects/large_models/ply.html">Tool</a><br>
+    (5)<a href="http://people.sc.fsu.edu/~jburkardt/data/ply/ply.html">Samples</a><br>
+
+    <br>
+    Controls:<br>
+    (1) Magnification (slider range: 1 - 10 in Chrome).<br>
+    (2) Click on an arrow to rotate 10 degrees increment.<br><br>
+    </p>
+	<p id="faceCount"> Face count: </p>
+    <select id="combo">
+		<option value="dolphins.ply">dolphins</option>
+      	<option value="cow.ply">cow</option>
+    </select> 
+    <p id="xpos"> Rotate X: </p>
+    
+	Magnification: <input id="slider" type="range" value=5  min="1" max="10" step="1" /><br>
+    
+    <br>
+</div>
+
+</body>
+</html>

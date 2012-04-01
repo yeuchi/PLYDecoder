@@ -1,0 +1,22 @@
+canvas {
+    border: 1px dashed red;
+    position: relative;
+}
+button {
+    width: 200px;
+}
+#divLeft {
+    position: absolute;
+    top: 410px;
+    left: 140px;
+}
+#divRight {
+    position: absolute;
+    top: 410px;
+    left: 230px;
+}
+#divControls {
+    position: absolute;
+    top: 10px;
+    left: 430px;
+}
